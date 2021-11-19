@@ -1,10 +1,19 @@
 import React, { useState } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function App() {
   const [list, setList] = useState([])
   const [inputValue, setInputValue] = useState('')
+
+  function addItem(){
+    if(inputValue!==''){
+      setList([...list, {value:inputValue, id:uuidv4(), checked: false}])
+      setInputValue('')
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -21,6 +30,7 @@ export default function App() {
         />
         <TouchableOpacity
           style={styles.button}
+          onPress={addItem}
         />
         </View>
       </View>
