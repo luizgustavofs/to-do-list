@@ -3,6 +3,8 @@ import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'r
 import {SafeAreaView} from 'react-native-safe-area-context';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
+
 
 export default function App() {
   const [list, setList] = useState([])
@@ -14,12 +16,36 @@ export default function App() {
       setInputValue('')
     }
   }
+  
+  function onPressToDoList(isChecked, item){
+    const newList=list.map(element=>element.id===item.id?{...element, checked:isChecked}:element)
+    const listUnChecked=newList.filter(element=>!element.checked)
+    const listChecked=newList.filter(element=>element.checked)
+    setList([...listUnChecked, ...listChecked])    
+  }
+
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>To do list</Text>
       <Text style={styles.subtitle}>1 item adicionado</Text>
-      <FlatList style={styles.list}></FlatList>
+      <FlatList 
+        style={styles.list}
+        data={list}
+        renderItem={({item})=>
+          <View style={styles.toDoItem}>
+            <BouncyCheckbox
+              size={25}
+              fillColor="#8270f8"
+              unfillColor="#FFFFFF"
+              isChecked={item.checked}
+              text={item.value}
+              iconStyle={{ borderColor: "#ccc", borderRadius: 8,}}
+              onPress={(isChecked) => onPressToDoList(isChecked, item)}
+            />
+          </View>
+        }
+      />
       <View style={styles.inputContainer}>
         <View style={styles.customInput}>
         <TextInput
@@ -53,6 +79,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   list: {
+    marginTop: 8,
   },
   inputContainer: {
     backgroundColor: `#F1F4F9`,
@@ -79,4 +106,13 @@ const styles = StyleSheet.create({
     width: 30,
     borderRadius: 8,
   },
+  toDoItem: {
+    backgroundColor: '#fff',
+    height: 40,
+    width: '100%',
+    marginBottom: 8,
+    borderRadius: 8,
+    justifyContent: 'center',
+    paddingHorizontal: 8,
+  }
 });
